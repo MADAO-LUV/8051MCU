@@ -1,0 +1,79 @@
+C51 COMPILER V9.54   MAIN                                                                  03/06/2024 18:58:13 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main
+                    -.lst) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include <REGX52.H>
+   2          #include "Delay.h"
+   3          
+   4          sbit RCK=P3^5; //上升沿锁存
+   5          sbit SCK=P3^6; //上升沿位移
+   6          sbit SER=P3^4;  //SER
+   7          
+   8          #define MATRIX_LED_PORT  P0 //宏定义 不同的型号其LED点阵端口不同
+   9          
+  10          void _74HC595_WriteByte(unsigned char Byte)
+  11          {
+  12   1        //高位在先
+  13   1        unsigned char i;
+  14   1        for (i=0;i<8;i++)
+  15   1        {
+  16   2          SER=(Byte&(0x80>>i));
+  17   2          SCK=1;
+  18   2          SCK=0;
+  19   2        }
+  20   1        RCK=1;
+  21   1        RCK=0;
+  22   1      }
+  23          
+  24          //Data 七行称为data
+  25          void MatrixLED_ShowColumn(unsigned char Column,Data)
+  26          {
+  27   1        unsigned char i;
+  28   1        _74HC595_WriteByte(Data); //段选
+  29   1        MATRIX_LED_PORT=~(0x80>>Column); //位选
+  30   1        Delay(1); //延迟
+  31   1        MATRIX_LED_PORT=0xFF; //位清零
+  32   1      }
+*** WARNING C280 IN LINE 27 OF main.c: 'i': unreferenced local variable
+  33          
+  34          void main()
+  35          {
+  36   1        unsigned char i;
+  37   1        SCK=0;
+  38   1        RCK=0;
+  39   1        
+  40   1        while(1)
+  41   1        {
+  42   2          MatrixLED_ShowColumn(0,0x3C);
+  43   2          MatrixLED_ShowColumn(1,0x42);
+  44   2          MatrixLED_ShowColumn(2,0xA9);
+  45   2          MatrixLED_ShowColumn(3,0x85);
+  46   2          MatrixLED_ShowColumn(4,0x85);
+  47   2          MatrixLED_ShowColumn(5,0xA9);
+  48   2          MatrixLED_ShowColumn(6,0x42);
+  49   2          MatrixLED_ShowColumn(7,0x3C);
+  50   2        }
+  51   1      }
+*** WARNING C280 IN LINE 36 OF main.c: 'i': unreferenced local variable
+
+C51 COMPILER V9.54   MAIN                                                                  03/06/2024 18:58:13 PAGE 2   
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    157    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       2
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  2 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,160 @@
+BL51 BANKED LINKER/LOCATER V6.22                                                        03/06/2024  18:58:13  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V6.22, INVOKED BY:
+C:\KEIL_V5\C51\BIN\BL51.EXE .\Objects\main.obj, .\Objects\Delay.obj TO .\Objects\prokect PRINT (.\Listings\prokect.m51) 
+>> RAMSIZE (256)
+
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  .\Objects\main.obj (MAIN)
+  .\Objects\Delay.obj (DELAY)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C_STARTUP)
+
+
+LINK MAP OF MODULE:  .\Objects\prokect (MAIN)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            DATA    0008H     0002H     UNIT         _DATA_GROUP_
+            IDATA   000AH     0001H     UNIT         ?STACK
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+                    0003H     07FDH                  *** GAP ***
+            CODE    0800H     004EH     UNIT         ?PR?MAIN?MAIN
+            CODE    084EH     002DH     UNIT         ?PR?__74HC595_WRITEBYTE?MAIN
+            CODE    087BH     0022H     UNIT         ?PR?_MATRIXLED_SHOWCOLUMN?MAIN
+            CODE    089DH     0015H     UNIT         ?PR?_DELAY?DELAY
+            CODE    08B2H     000CH     UNIT         ?C_C51STARTUP
+
+
+
+OVERLAY MAP OF MODULE:   .\Objects\prokect (MAIN)
+
+
+SEGMENT                                  DATA_GROUP 
+  +--> CALLED SEGMENT                  START    LENGTH
+------------------------------------------------------
+?C_C51STARTUP                          -----    -----
+  +--> ?PR?MAIN?MAIN
+
+?PR?MAIN?MAIN                          0008H    0001H
+  +--> ?PR?_MATRIXLED_SHOWCOLUMN?MAIN
+
+?PR?_MATRIXLED_SHOWCOLUMN?MAIN         0009H    0001H
+  +--> ?PR?__74HC595_WRITEBYTE?MAIN
+  +--> ?PR?_DELAY?DELAY
+
+
+
+SYMBOL TABLE OF MODULE:  .\Objects\prokect (MAIN)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+BL51 BANKED LINKER/LOCATER V6.22                                                      03/06/2024  18:58:13  PAGE 2
+
+
+
+  -------         MODULE        MAIN
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:0080H         PUBLIC        P0
+  C:084EH         PUBLIC        __74HC595_WriteByte
+  D:00B0H         PUBLIC        P3
+  C:0800H         PUBLIC        main
+  C:087BH         PUBLIC        _MatrixLED_ShowColumn
+  B:00B0H.5       PUBLIC        RCK
+  B:00B0H.6       PUBLIC        SCK
+  B:00B0H.4       PUBLIC        SER
+  -------         PROC          __74HC595_WRITEBYTE
+  D:0005H         SYMBOL        Byte
+  -------         DO            
+  D:0003H         SYMBOL        i
+  -------         ENDDO         
+  C:084EH         LINE#         10
+  C:0850H         LINE#         11
+  C:0850H         LINE#         14
+  C:0852H         LINE#         15
+  C:0852H         LINE#         16
+  C:086EH         LINE#         17
+  C:0870H         LINE#         18
+  C:0872H         LINE#         19
+  C:0876H         LINE#         20
+  C:0878H         LINE#         21
+  C:087AH         LINE#         22
+  -------         ENDPROC       __74HC595_WRITEBYTE
+  -------         PROC          _MATRIXLED_SHOWCOLUMN
+  D:0002H         SYMBOL        Column
+  D:0004H         SYMBOL        Data
+  -------         DO            
+  D:0009H         SYMBOL        i
+  -------         ENDDO         
+  C:087BH         LINE#         25
+  C:087DH         LINE#         26
+  C:087DH         LINE#         28
+  C:0882H         LINE#         29
+  C:0892H         LINE#         30
+  C:0899H         LINE#         31
+  C:089CH         LINE#         32
+  -------         ENDPROC       _MATRIXLED_SHOWCOLUMN
+  -------         PROC          MAIN
+  -------         DO            
+  D:0008H         SYMBOL        i
+  -------         ENDDO         
+  C:0800H         LINE#         34
+  C:0800H         LINE#         35
+  C:0800H         LINE#         37
+  C:0802H         LINE#         38
+  C:0804H         LINE#         40
+  C:0804H         LINE#         41
+  C:0804H         LINE#         42
+  C:080DH         LINE#         43
+  C:0816H         LINE#         44
+  C:081FH         LINE#         45
+  C:0828H         LINE#         46
+BL51 BANKED LINKER/LOCATER V6.22                                                      03/06/2024  18:58:13  PAGE 3
+
+
+  C:0831H         LINE#         47
+  C:083AH         LINE#         48
+  C:0843H         LINE#         49
+  C:084CH         LINE#         50
+  -------         ENDPROC       MAIN
+  -------         ENDMOD        MAIN
+
+  -------         MODULE        DELAY
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  C:089DH         PUBLIC        _Delay
+  -------         PROC          _DELAY
+  D:0006H         SYMBOL        xms
+  -------         DO            
+  D:0005H         SYMBOL        i
+  D:0004H         SYMBOL        j
+  -------         ENDDO         
+  C:089DH         LINE#         3
+  C:089DH         LINE#         4
+  C:089DH         LINE#         6
+  C:08A7H         LINE#         7
+  C:08A7H         LINE#         8
+  C:08A9H         LINE#         9
+  C:08ABH         LINE#         11
+  C:08ABH         LINE#         12
+  C:08ADH         LINE#         13
+  C:08AFH         LINE#         15
+  C:08B1H         LINE#         17
+  -------         ENDPROC       _DELAY
+  -------         ENDMOD        DELAY
+
+******************************************************************************
+* RESTRICTED VERSION WITH 0800H BYTE CODE SIZE LIMIT; USED: 00B2H BYTE ( 8%) *
+******************************************************************************
+
+Program Size: data=11.0 xdata=0 code=193
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

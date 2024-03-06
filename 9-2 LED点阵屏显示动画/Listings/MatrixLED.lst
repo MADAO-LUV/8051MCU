@@ -1,0 +1,82 @@
+C51 COMPILER V9.54   MATRIXLED                                                             03/06/2024 19:10:41 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE MATRIXLED
+OBJECT MODULE PLACED IN .\Objects\MatrixLED.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE MatrixLED.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings
+                    -\MatrixLED.lst) TABS(2) OBJECT(.\Objects\MatrixLED.obj)
+
+line level    source
+
+   1          #include <REGX52.H>
+   2          #include "Delay.h"
+   3          
+   4          sbit RCK=P3^5; //上升沿锁存
+   5          sbit SCK=P3^6; //上升沿位移
+   6          sbit SER=P3^4;  //SER
+   7          #define MATRIX_LED_PORT  P0 //宏定义 不同的型号其LED点阵端口不同
+   8          
+   9          /**
+  10            * @brief  74HC595写入一个字节
+  11            * @param  无
+  12            * @retval 无
+  13            */
+  14          void _74HC595_WriteByte(unsigned char Byte)
+  15          {
+  16   1        //高位在先
+  17   1        unsigned char i;
+  18   1        for (i=0;i<8;i++)
+  19   1        {
+  20   2          SER=(Byte&(0x80>>i));
+  21   2          SCK=1;
+  22   2          SCK=0;
+  23   2        }
+  24   1        RCK=1;
+  25   1        RCK=0;
+  26   1      }
+  27          
+  28          /**
+  29            * @brief  点阵屏初始化  
+  30            * @param  无
+  31            * @retval 无
+  32            */
+  33          //初始化
+  34          void MatrixLED_Init()
+  35          {
+  36   1        SCK=0;
+  37   1        RCK=0;
+  38   1      }
+  39          
+  40          
+  41          /**
+  42            * @brief  LED点阵屏显示一列数据  
+  43            * @param  Column 要选择的列 ，范围：0-7 ，0在最左边
+  44          * @param Data 选择行显示的数据，高位在上，1为亮，0为灭
+  45            * @retval 无
+  46            */
+  47          //Data 七行称为data
+  48          void MatrixLED_ShowColumn(unsigned char Column,Data)
+  49          {
+  50   1        unsigned char i;
+  51   1        _74HC595_WriteByte(Data); //段选
+  52   1        MATRIX_LED_PORT=~(0x80>>Column); //位选
+  53   1        Delay(1); //延迟
+  54   1        MATRIX_LED_PORT=0xFF; //位清零
+C51 COMPILER V9.54   MATRIXLED                                                             03/06/2024 19:10:41 PAGE 2   
+
+  55   1      }
+*** WARNING C280 IN LINE 50 OF MatrixLED.c: 'i': unreferenced local variable
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     84    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       1
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,89 @@
+C51 COMPILER V9.54   MAIN                                                                  03/06/2024 21:02:01 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main
+                    -.lst) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include <REGX52.H>
+   2          #include "Delay.h"
+   3          #include "MatrixLED.h"
+   4          #include "Timer0.h"
+   5          
+   6          unsigned char code Admation[] = {
+   7            0x18,0xA3,0xFC,0xF8,0xAC,0x23,0x1E,0x0E,
+   8            0x19,0x26,0xBF,0xFB,0xEB,0xB4,0x17,0x11,
+   9            0x18,0xA3,0xFC,0xF8,0xAC,0x23,0x1E,0x0E,
+  10            0x19,0x26,0xBF,0xFB,0xEB,0xB4,0x17,0x11,
+  11            0x01,0x17,0xA8,0xFA,0xF7,0x92,0x0D,0x01,
+  12            0x3C,0x18,0x08,0x08,0x91,0xEF,0xC1,0x90,
+  13            0x00,0x30,0x20,0xFF,0xFE,0xA0,0x00,0x00,
+  14            0x00,0x00,0x70,0xFF,0xBA,0x34,0x40,0x80,
+  15            0x00,0x00,0x70,0xFF,0xBA,0x34,0x00,0x00,
+  16            0x00,0x00,0x00,0x37,0x78,0xF8,0xB6,0x01,
+  17            0x00,0x00,0x00,0x37,0x78,0xF8,0xB6,0x01,
+  18            0x00,0x00,0x1B,0x3C,0x7C,0x56,0x01,0x00,
+  19            0x00,0x00,0x01,0x02,0x1C,0x3C,0x7B,0x58,
+  20            0x00,0x00,0x1B,0x3C,0x7C,0x56,0x01,0x00,
+  21            0x00,0x00,0x00,0x37,0x78,0xF8,0xB6,0x01,
+  22            0x00,0x00,0x70,0xFF,0xBA,0x34,0x00,0x00,
+  23            0x00,0x00,0x70,0xFF,0xBA,0x34,0x40,0x80,
+  24            0x00,0x00,0x1B,0x3C,0x7C,0x56,0x01,0x00,
+  25            0x00,0x00,0x00,0x37,0x78,0xF8,0xB6,0x01,
+  26          };
+  27          
+  28          unsigned char offset=0;
+  29          void main()
+  30          {
+  31   1        
+  32   1        unsigned char i;
+  33   1        Timer0Init();
+  34   1        MatrixLED_Init();
+  35   1        
+  36   1        while(1)
+  37   1        {
+  38   2          for(i=0;i<8;i++)
+  39   2          {
+  40   3            MatrixLED_ShowColumn(i,Admation[i+offset]);
+  41   3          }
+  42   2          
+  43   2      
+  44   2        }
+  45   1      }
+  46          
+  47          
+  48          void Timer0_Routine() interrupt 1 //中断小程序
+  49          {
+  50   1        static unsigned int T0Count; //局部静态变量，防止函数结束后，该变量的数清零，导�
+             -�无法累加
+  51   1        TL0 = 0x18;   //设置定时初值
+  52   1        TH0 = 0xFC;   //设置定时初值
+  53   1        T0Count++;
+C51 COMPILER V9.54   MAIN                                                                  03/06/2024 21:02:01 PAGE 2   
+
+  54   1        if(T0Count>=1000){
+  55   2            T0Count=0;
+  56   2            offset+=8;
+  57   2            if(offset>144)
+  58   2            {
+  59   3              offset=0;
+  60   3            }
+  61   2        }
+  62   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     88    ----
+   CONSTANT SIZE    =    152    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      3       1
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

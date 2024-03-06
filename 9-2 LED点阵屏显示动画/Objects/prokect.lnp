@@ -1,0 +1,6 @@
+".\Objects\main.obj",
+".\Objects\Delay.obj",
+".\Objects\MatrixLED.obj",
+".\Objects\Timer0.obj" 
+TO ".\Objects\prokect" 
+PRINT(".\Listings\prokect.m51") RAMSIZE(256) 

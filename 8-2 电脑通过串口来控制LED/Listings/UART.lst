@@ -1,0 +1,77 @@
+C51 COMPILER V9.54   UART                                                                  03/05/2024 15:28:01 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE UART
+OBJECT MODULE PLACED IN .\Objects\UART.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE UART.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\UART
+                    -.lst) TABS(2) OBJECT(.\Objects\UART.obj)
+
+line level    source
+
+   1          #include <REGX52.H>
+   2          
+   3          /**
+   4          * @brief    串口初始化 晶振为11.0592hz 9600bps
+   5            * @param  无
+   6            * @retval 无
+   7            */
+   8          
+   9          
+  10          
+  11          //串口初始化
+  12          void UartInit(void)   //9600bps@11.0592MHz
+  13          {
+  14   1        PCON &= 0x80;   //波特率不倍速
+  15   1        SCON = 0x50;    //8位数据,接收数据
+  16   1        TMOD &= 0x0F;   //清除定时器1模式位
+  17   1        TMOD |= 0x20;   //设定定时器1为8位自动重装方式
+  18   1        TL1 = 0xFD;   //设定定时初值
+  19   1        TH1 = 0xFD;   //设定定时器重装值
+  20   1        ET1 = 0;    //禁止定时器1中断
+  21   1        TR1 = 1;    //启动定时器1
+  22   1        EA=1;
+  23   1        ES=1; //中断启动
+  24   1      }
+  25          
+  26          /**
+  27            * @brief  串口发送两个字节数据  
+  28            * @param  Byte 要发送的一个数据之一
+  29            * @retval 无
+  30            */
+  31          void UART_SendByte(unsigned char Byte)
+  32          {
+  33   1        SBUF=Byte;
+  34   1        while(TI==0);//判断TI是否等于1，等于1时跳出循环
+  35   1        TI=0; //软件置位回0
+  36   1      }
+  37          
+  38          
+  39          
+  40          /* 串口中断函数模板 需要用时，挪入主函数中
+  41          void UART_Routine() interrupt 4
+  42          {
+  43            //判断是发送中断
+  44            if(RI==1)
+  45            {
+  46          
+  47              RI=0; //需要清零
+  48            }
+  49          
+  50          }
+  51          */
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+C51 COMPILER V9.54   UART                                                                  03/05/2024 15:28:01 PAGE 2   
+
+   CODE SIZE        =     35    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
