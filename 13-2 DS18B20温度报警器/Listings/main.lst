@@ -1,0 +1,144 @@
+C51 COMPILER V9.54   MAIN                                                                  03/12/2024 16:42:59 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main
+                    -.lst) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include <REGX52.H>
+   2          #include "DS18B20.h"
+   3          #include "LCD1602.h"
+   4          #include "Delay.h"
+   5          #include "AT24C02.h"
+   6          #include "Key.h"
+   7          #include "Timer0.h"
+   8          
+   9          
+  10          float T,TShow;
+  11          char TLow,THigh;
+  12          unsigned char KeyNum;
+  13          
+  14          
+  15          void main()
+  16          {
+  17   1        DS18B20_ConvertT(); //上电先转换一次温度，防止第一次读数数据错误
+  18   1        Delay(1000); //延迟1s 等待转换完成
+  19   1        THigh=AT24C02_ReadByte(0); 
+  20   1        TLow=AT24C02_ReadByte(1);
+  21   1        if(THigh>125||TLow<-55||THigh<=TLow)
+  22   1        {
+  23   2          THigh=20; //如果阈值非法，则设为默认值
+  24   2          TLow=-10;
+  25   2        }
+  26   1        LCD_Init();
+  27   1        LCD_ShowString(1,1,"T:");
+  28   1        LCD_ShowString(2,1,"TH:");
+  29   1        LCD_ShowString(2,9,"TL:");
+  30   1        LCD_ShowSignedNum(2,4,THigh,3);
+  31   1        LCD_ShowSignedNum(2,12,TLow,3);
+  32   1        Timer0_Init(); //定时器初始化
+  33   1        
+  34   1        while(1)
+  35   1        {
+  36   2          KeyNum=Key();
+  37   2          
+  38   2          /*温度读取及显示*/
+  39   2          DS18B20_ConvertT(); //转换温度
+  40   2          T=DS18B20_ReadT(); //读取温度
+  41   2          if(T<0)   //如果温度小于0
+  42   2          {
+  43   3            LCD_ShowChar(1,3,'-');
+  44   3            TShow=-T;
+  45   3          }
+  46   2          else  //如果温度大于等于0
+  47   2          {
+  48   3            LCD_ShowChar(1,3,'+');
+  49   3            TShow=T;
+  50   3          }
+  51   2          LCD_ShowNum(1,4,TShow,3); //显示温度整数部分
+  52   2          LCD_ShowChar(1,7,'.'); //显示小数点
+  53   2          LCD_ShowNum(1,8,(unsigned long)(TShow*100)%100,2); //显示小数的前两位
+  54   2          
+C51 COMPILER V9.54   MAIN                                                                  03/12/2024 16:42:59 PAGE 2   
+
+  55   2          /*阈值判断及显示*/
+  56   2          if(KeyNum)
+  57   2          {
+  58   3              if(KeyNum==1) //K1按键，THigh自增
+  59   3            {
+  60   4              THigh++;
+  61   4              if(THigh>125){THigh=125;}
+  62   4            }
+  63   3            if(KeyNum==2)  //K2按键，THigh自降
+  64   3            {
+  65   4              THigh--;
+  66   4              if(THigh<=TLow){THigh++;}
+  67   4            }
+  68   3            if(KeyNum==3) //K3按键，TLow自加
+  69   3            {
+  70   4              TLow++;
+  71   4              if(TLow>=THigh){TLow--;}
+  72   4            }
+  73   3            if(KeyNum==4) //K4按键，TLow自减
+  74   3            {
+  75   4              TLow--;
+  76   4              if(TLow<-55){TLow=-55;}
+  77   4            }
+  78   3            LCD_ShowSignedNum(2,4,THigh,3);//显示阈值数据
+  79   3            LCD_ShowSignedNum(2,12,TLow,3);
+  80   3            AT24C02_WriteByte(0,THigh); //写入到AT24C02中保存起来
+  81   3            Delay(5);
+  82   3            AT24C02_WriteByte(1,TLow);
+  83   3            Delay(5);
+  84   3          }
+  85   2          if(T>THigh)//越界判断
+  86   2          {
+  87   3            LCD_ShowString(1,13,"OV:H");
+  88   3          }
+  89   2          else if(T<TLow)
+  90   2          {
+  91   3            LCD_ShowString(1,13,"OV:L");
+  92   3          }
+  93   2          else
+  94   2          {
+  95   3            LCD_ShowString(1,13,"    ");
+  96   3          }
+  97   2          
+  98   2        }
+  99   1      }
+ 100          
+ 101          
+ 102          void Timer0_Routine() interrupt 1 //中断小程序
+ 103          {
+ 104   1        static unsigned int T0Count; //局部静态变量，防止函数结束后，该变量的数清零，导�
+             -�无法累加
+ 105   1        TL0 = 0x18;   //设置定时初值
+ 106   1        TH0 = 0xFC;   //设置定时初值
+ 107   1        T0Count++;
+ 108   1        if(T0Count>=20)
+ 109   1          {
+ 110   2            T0Count=0;
+ 111   2            Key_Loop();//按键对时序性要求并不是非常高
+ 112   2          }
+ 113   1      }
+ 114          
+ 115          
+C51 COMPILER V9.54   MAIN                                                                  03/12/2024 16:42:59 PAGE 3   
+
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    629    ----
+   CONSTANT SIZE    =     26    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     13    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
