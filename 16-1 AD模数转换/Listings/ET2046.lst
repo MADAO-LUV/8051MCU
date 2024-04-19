@@ -1,0 +1,71 @@
+C51 COMPILER V9.54   ET2046                                                                03/16/2024 11:19:39 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE ET2046
+OBJECT MODULE PLACED IN .\Objects\ET2046.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE ET2046.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\ET
+                    -2046.lst) TABS(2) OBJECT(.\Objects\ET2046.obj)
+
+line level    source
+
+   1          #include <REGX52.H>
+   2          #include <INTRINS.H>
+   3          
+   4          //引脚定义
+   5          sbit ET2046_CS=P3^5;
+   6          sbit ET2046_DCLK=P3^6;
+   7          sbit ET2046_DIN=P3^4;
+   8          sbit ET2046_DOUT=P3^7;
+   9          
+  10          /**
+  11            * @brief  ET2046读取AD值  
+  12            * @param  Command命令字，范围：头文件内定义的宏，结尾的数字表示转换的位数
+  13            * @retval AD转换后的数字量，范围：8位为0~255,12位为0~4095
+  14            */
+  15          unsigned int ET2046_ReadAD(unsigned char Command)
+  16          {
+  17   1        unsigned int ADVALue=0;
+  18   1        unsigned char i;
+  19   1        ET2046_DCLK=0;
+  20   1        ET2046_CS=0;
+  21   1        
+  22   1        for(i=0;i<8;i++)
+  23   1        {
+  24   2            ET2046_DIN=Command&(0x80>>i);
+  25   2            ET2046_DCLK=1;
+  26   2            ET2046_DCLK=0;
+  27   2        }
+  28   1        //执行下来已经大于1.5us了
+  29   1        
+  30   1        for(i=0;i<16;i++)
+  31   1        {
+  32   2            ET2046_DCLK=1;
+  33   2            ET2046_DCLK=0;
+  34   2            if(ET2046_DOUT){ADVALue|=(0x8000>>i);}
+  35   2        }
+  36   1        ET2046_CS=1;
+  37   1        if(Command&0x08)
+  38   1        {
+  39   2          return ADVALue>>8;
+  40   2        }
+  41   1        else
+  42   1        {
+  43   2          return ADVALue>>4;
+  44   2        }
+  45   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    110    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       2
+   IDATA SIZE       =   ----    ----
+C51 COMPILER V9.54   ET2046                                                                03/16/2024 11:19:39 PAGE 2   
+
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
